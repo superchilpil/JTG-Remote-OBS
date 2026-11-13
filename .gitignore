@@ -1,0 +1,19 @@
+# .NET
+**/bin/
+**/obj/
+.vs/
+
+# Android / Gradle
+.gradle/
+**/build/
+local.properties
+*.iml
+
+# IDE
+.idea/
+.vscode/
+
+# Secrets and local configuration
+.env
+*.user
+*.suo
