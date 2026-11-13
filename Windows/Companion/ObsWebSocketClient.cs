@@ -100,7 +100,7 @@ public sealed class ObsWebSocketClient(IConfiguration configuration, ILogger<Obs
 
     private async Task IdentifyAsync(ClientWebSocket socket, string? password, CancellationToken ct)
     {
-        using var hello = await ReceiveJsonAsync(socket, ct);
+        var hello = await ReceiveJsonAsync(socket, ct);
         if (hello["op"]?.GetValue<int>() != 0) throw new InvalidOperationException("OBS did not send a Hello message.");
         var rpcVersion = hello["d"]?["rpcVersion"]?.GetValue<int>() ?? 1;
         var identify = new JsonObject { ["rpcVersion"] = rpcVersion, ["eventSubscriptions"] = 64 };
@@ -117,7 +117,7 @@ public sealed class ObsWebSocketClient(IConfiguration configuration, ILogger<Obs
         }
 
         await SendJsonAsync(socket, new JsonObject { ["op"] = 1, ["d"] = identify }, ct);
-        using var identified = await ReceiveJsonAsync(socket, ct);
+        var identified = await ReceiveJsonAsync(socket, ct);
         if (identified["op"]?.GetValue<int>() != 2)
             throw new InvalidOperationException(identified["d"]?["message"]?.GetValue<string>() ?? "OBS identification failed.");
     }
@@ -135,7 +135,7 @@ public sealed class ObsWebSocketClient(IConfiguration configuration, ILogger<Obs
 
         while (true)
         {
-            using var message = await ReceiveJsonAsync(socket, ct);
+            var message = await ReceiveJsonAsync(socket, ct);
             var op = message["op"]?.GetValue<int>();
             if (op == 7 && message["d"]?["requestId"]?.GetValue<string>() == id)
             {
@@ -154,7 +154,7 @@ public sealed class ObsWebSocketClient(IConfiguration configuration, ILogger<Obs
         await socket.SendAsync(bytes, WebSocketMessageType.Text, true, ct);
     }
 
-    private static async Task<JsonDocument> ReceiveJsonAsync(ClientWebSocket socket, CancellationToken ct)
+    private static async Task<JsonNode> ReceiveJsonAsync(ClientWebSocket socket, CancellationToken ct)
     {
         var buffer = new byte[8192];
         using var stream = new MemoryStream();
@@ -168,7 +168,7 @@ public sealed class ObsWebSocketClient(IConfiguration configuration, ILogger<Obs
             if (stream.Length > 1024 * 1024) throw new InvalidOperationException("OBS WebSocket message exceeded 1 MB.");
         } while (!result.EndOfMessage);
 
-        return JsonDocument.Parse(stream.ToArray());
+        return JsonNode.Parse(stream.ToArray()) ?? throw new InvalidOperationException("OBS returned an empty message.");
     }
 
     private static bool IPAddressLoopback(string host) =>
