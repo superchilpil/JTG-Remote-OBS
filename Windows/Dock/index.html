@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JTG Remote OBS</title>
+  <link rel="stylesheet" href="dock.css">
+</head>
+<body>
+  <main class="panel">
+    <header>
+      <div class="brand-mark">JTG</div>
+      <div>
+        <h1>Remote OBS</h1>
+        <p>Streaming companion</p>
+      </div>
+      <span class="status" id="companion-status">STARTING</span>
+    </header>
+    <section class="metrics">
+      <article><span>OBS</span><strong id="obs-state">Not connected</strong></article>
+      <article><span>YouTube</span><strong id="youtube-state">Not authorized</strong></article>
+      <article><span>Live chat</span><strong id="chat-state">Offline</strong></article>
+    </section>
+    <section class="chat">
+      <div class="chat-heading"><h2>Live chat</h2><span>Waiting for connection</span></div>
+      <div class="empty" id="chat-empty">YouTube chat will appear here once the channel is connected.</div>
+      <div class="messages" id="chat-messages" aria-live="polite"></div>
+    </section>
+    <footer>Local network companion · Remote controls disabled during initial setup</footer>
+  </main>
+  <script src="dock.js"></script>
+</body>
+</html>
