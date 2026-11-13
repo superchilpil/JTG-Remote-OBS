@@ -62,10 +62,21 @@ public sealed class ObsWebSocketClient(IConfiguration configuration, ILogger<Obs
                 var receiveTask = ReceiveLoopAsync(socket, connectionCts.Token);
                 var statusTask = PollStatusAsync(socket, connectionCts.Token);
 
-                await receiveTask;
-                connectionCts.Cancel();
-                try { await statusTask; }
-                catch (OperationCanceledException) when (connectionCts.IsCancellationRequested) { }
+                try
+                {
+                    var completed = await Task.WhenAny(receiveTask, statusTask);
+                    await completed;
+                }
+                finally
+                {
+                    connectionCts.Cancel();
+                    try { await Task.WhenAll(receiveTask, statusTask); }
+                    catch (OperationCanceledException) when (connectionCts.IsCancellationRequested) { }
+                    catch (Exception ex)
+                    {
+                        logger.LogDebug(ex, "OBS connection worker stopped.");
+                    }
+                }
             }
             catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
             {
