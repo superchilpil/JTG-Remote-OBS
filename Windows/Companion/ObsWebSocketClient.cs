@@ -58,7 +58,7 @@ public sealed class ObsWebSocketClient(IConfiguration configuration, ILogger<Obs
 
                 while (socket.State == WebSocketState.Open && !stoppingToken.IsCancellationRequested)
                 {
-                    var result = await RequestAsync(socket, "GetStreamStatus", null, stoppingToken);
+                    JsonObject? result;\n                    await _gate.WaitAsync(stoppingToken);\n                    try { result = await RequestAsync(socket, "GetStreamStatus", null, stoppingToken); }\n                    finally { _gate.Release(); }
                     _outputActive = result?["outputActive"]?.GetValue<bool>() ?? false;
                     _outputReconnecting = result?["outputReconnecting"]?.GetValue<bool>() ?? false;
                     _outputDuration = result?["outputDuration"]?.GetValue<double>() ?? 0;
@@ -161,7 +161,7 @@ public sealed class ObsWebSocketClient(IConfiguration configuration, ILogger<Obs
         WebSocketReceiveResult result;
         do
         {
-            result = await socket.ReceiveAsync(buffer, ct);
+            result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), ct);
             if (result.MessageType == WebSocketMessageType.Close)
                 throw new WebSocketException("OBS closed the WebSocket connection.");
             stream.Write(buffer, 0, result.Count);
