@@ -1,0 +1,21 @@
+:root { color-scheme: dark; font-family: Inter, Segoe UI, sans-serif; background: #101216; color: #edf0f5; }
+* { box-sizing: border-box; }
+body { margin: 0; padding: 14px; background: #101216; }
+.panel { max-width: 900px; margin: 0 auto; }
+header { display: flex; align-items: center; gap: 12px; padding: 12px 0 18px; border-bottom: 1px solid #2b303a; }
+.brand-mark { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 12px; background: #e53935; font-weight: 900; }
+h1, h2, p { margin: 0; }
+h1 { font-size: 17px; } header p { margin-top: 4px; color: #929baa; font-size: 12px; }
+.status { margin-left: auto; color: #e5b45d; font-size: 10px; letter-spacing: .12em; }
+.metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 16px 0; }
+.metrics article { padding: 13px; background: #1a1e25; border: 1px solid #2b303a; border-radius: 10px; }
+.metrics span { display: block; color: #929baa; font-size: 11px; margin-bottom: 7px; }
+.metrics strong { font-size: 13px; }
+.chat { min-height: 300px; background: #171b22; border: 1px solid #2b303a; border-radius: 12px; overflow: hidden; }
+.chat-heading { display: flex; justify-content: space-between; align-items: center; padding: 14px; border-bottom: 1px solid #2b303a; }
+.chat-heading h2 { font-size: 14px; } .chat-heading span, footer { color: #929baa; font-size: 11px; }
+.empty { padding: 36px 16px; text-align: center; color: #929baa; font-size: 12px; }
+.messages { display: flex; flex-direction: column; gap: 8px; padding: 12px; }
+.message { font-size: 12px; line-height: 1.45; } .message strong { color: #8db8ff; margin-right: 6px; }
+footer { padding: 14px 2px; }
+@media (max-width: 480px) { .metrics { grid-template-columns: 1fr; } }
