@@ -1,0 +1,23 @@
+name: Windows Companion Build
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "Windows/**"
+      - ".github/workflows/windows-build.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+      - name: Build companion
+        run: dotnet build Windows/Companion/JTG.RemoteOBS.Companion.csproj --configuration Release
